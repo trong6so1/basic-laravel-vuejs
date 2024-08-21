@@ -6,22 +6,26 @@ import { useMenu } from "@/stores/menu.js";
 import { ref } from "vue";
 export default {
   setup() {
-    useMenu().onSelectedKeys(["users"]);
     const users = ref([]);
-    users.value = this.getUsers();
-  },
-  methods: {
-    getUsers() {
-      axios
-        .get("http://localhost:8000/api/users/index")
-        .then((response) => {
-          console.log(response.data);
-          return 1;
-        })
-        .catch((error) => {
-          return error;
-        });
-    },
-  },
+
+    const getUsers = async () => {
+      try {
+        const response = await axios.get("http://localhost:8000/api/users/index");
+        users.value = response.data;
+      } catch (error) {
+        console.error("Error fetching users:", error);
+        // Có thể xử lý lỗi tại đây
+      }
+    };
+
+    // Gọi hàm getUsers khi component được mount
+    onMounted(() => {
+      getUsers();
+    });
+
+    // Trả về các biến và hàm để sử dụng trong template
+    return {
+      users,
+    };
 };
 </script>
