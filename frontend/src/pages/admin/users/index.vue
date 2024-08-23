@@ -3,7 +3,7 @@
         <div class="row">
             <div class="col-12 d-flex justify-content-end mb-3">
                 <a-button type="primary">
-                    <router-link :to="{ name: 'adminSettings' }">
+                    <router-link :to="{name: 'adminUsersCreate'}">
                         <i class="fa-solid fa-plus"></i>
                     </router-link>
                 </a-button>
