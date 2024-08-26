@@ -3,7 +3,7 @@ import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import App from './App.vue'
 import router from './router'
-import { Table, Card, Menu, List, Drawer, Button, message } from 'ant-design-vue'
+import { Input, Select, Avatar, Table, Card, Menu, List, Drawer, Button, message } from 'ant-design-vue'
 import axios from 'axios'
 
 import 'ant-design-vue/dist/reset.css'
@@ -20,6 +20,9 @@ app.use(Drawer)
 app.use(List)
 app.use(Menu)
 app.use(Card)
+app.use(Avatar)
 app.use(Table)
+app.use(Input)
+app.use(Select)
 app.mount('#app')
 app.config.globalProperties.$message = message

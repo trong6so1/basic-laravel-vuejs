@@ -9,7 +9,7 @@
                 </a-button>
             </div>
         </div>
-        <div class="rol">
+        <div class="row">
             <div class="col-12">
                 <a-table :dataSource="users" :columns="columns" :scroll="{ x: 576 }">
                     <template #bodyCell="{ column, index, record }">

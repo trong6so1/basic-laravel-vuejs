@@ -23,3 +23,11 @@ Route::get('users/index',[
     UserController::class,
     'index'
 ]);
+Route::get('users/create',[
+    UserController::class,
+    'create'
+]);
+Route::post('users/create',[
+    UserController::class,
+    'postCreate'
+]);
