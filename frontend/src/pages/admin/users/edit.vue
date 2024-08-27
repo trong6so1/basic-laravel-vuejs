@@ -1,6 +1,6 @@
 <template>
-    <form @submit.prevent="createUser()">
-        <a-card title="Tạo mới tài khoản" style="width: 100%">
+    <form @submit.prevent="editUSer()">
+        <a-card title="Cập Nhật tài khoản" style="width: 100%">
             <div class="row mb-3">
                 <div class="col-12 col-sm-4 ">
                     <div class="row">
@@ -87,6 +87,13 @@
                     </div>
                     <div class="row mb-3">
                         <div class="col-12 col-sm-3 text-sm-end text-start">
+                        </div>
+                        <div class="col-12 col-sm-5">
+                            <a-checkbox v-model:checked="changePassword">Đổi Mật Khẩu</a-checkbox>
+                        </div>
+                    </div>
+                    <div class="row mb-3" v-if="changePassword == true">
+                        <div class="col-12 col-sm-3 text-sm-end text-start">
                             <span class="text-danger me-1">*</span>
                             <label :class="{ 'text-danger': errors.password }">Mật Khẩu:</label>
                         </div>
@@ -98,7 +105,7 @@
                                 v-if="errors.password">{{ errors . password . join("\n") }}</small>
                         </div>
                     </div>
-                    <div class="row mb-3">
+                    <div class="row mb-3" v-if="changePassword == true">
                         <div class="col-12 col-sm-3 text-sm-end text-start">
                             <span class="text-danger me-1">*</span>
                             <label :class="{ 'text-danger': errors.passwordConfirm }">Xác Nhận Mật Khẩu:</label>
@@ -109,6 +116,23 @@
                             <div class="w-100"></div>
                             <small class="text-danger"
                                 v-if="errors.passwordConfirm">{{ errors . passwordConfirm . join("\n") }}</small>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-12 col-sm-3 text-sm-end text-start">
+                            <label :class="{ 'text-danger': errors.passwordConfirm }">Login At:</label>
+                        </div>
+                        <div class="col-12 col-sm-5">
+                            <span>{{ users . login_at }}</span>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-12 col-sm-3 text-sm-end text-start">
+                            <label :class="{ 'text-danger': errors.passwordConfirm }">Change Password At:</label>
+                        </div>
+                        <div class="col-12 col-sm-5">
+                            <span>{{ users . change_password_at }}</span>
                         </div>
                     </div>
                 </div>
@@ -128,8 +152,11 @@
         useMenu
     } from '@/stores/menu';
     import axios from 'axios';
-    import { useRouter } from 'vue-router';
     import { message } from 'ant-design-vue';
+    import {
+        useRouter,
+        useRoute
+    } from 'vue-router';
     import {
         ref,
         reactive,
@@ -150,9 +177,13 @@
                 "password": "",
                 "passwordConfirm": "",
                 "email": "",
-                "name": ""
+                "name": "",
+                "changePassword": false,
+                "login_at": "No Login",
+                "change_password_at": "No Change",
             });
             const router = useRouter();
+            const route = useRoute();
             const getMaster = () => {
                 axios.get('http://127.0.0.1:8000/api/users/create')
                     .then((response) => {
@@ -162,22 +193,40 @@
                     .catch((error) => {
                         console.log(error);
                     });
+                axios.get(`http://127.0.0.1:8000/api/users/get-user/${route.params.id}`)
+                    .then((response) => {
+                        users.status_id = response.data.status_id;
+                        users.department_id = response.data.department_id;
+                        users.username = response.data.username;
+                        users.name = response.data.name;
+                        users.email = response.data.email;
+                        users.login_at = response.data.login_at ?? "No Login";
+                        users.change_password_at = response.data.change_password_at ?? "No Change";
+                        console.log(response);
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    });
+            }
+            const editUSer = () => {
+                axios.put(`http://127.0.0.1:8000/api/users/edit/${route.params.id}`, users)
+                .then((response) => {
+                    if(response.status == 200){
+                        message.success("Update Success", 10);
+                        router.push({name: "adminUsers"})
+                    }
+                    
+                })
+                .catch((error)=> {
+                    errors.value = error.response.data.errors;
+                    console.log(error
+                    );
+                })
+
             }
             const filterOption = (input, option) => {
                 return option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;
             };
-            const createUser = () => {
-                axios.post('http://127.0.0.1:8000/api/users/create', users)
-                    .then((response) => {
-                        console.log(response);
-                        message.success('Create Success', 10);
-                        router.push({name:'adminUsers'});
-                    })
-                    .catch((error) => {
-                        errors.value = error.response.data.errors;
-                        console.log(errors.value);
-                    })
-            }
             getMaster();
             return {
                 listDepartments,
@@ -185,9 +234,10 @@
                 users,
                 errors,
                 router,
+                route,
+                editUSer,
                 ...toRefs(users),
                 filterOption,
-                createUser
             }
         }
     }

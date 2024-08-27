@@ -20,6 +20,19 @@
                             <span
                                 :class="record.status_id == 2 ? 'text-danger' : 'text-primary'">{{ record . status . name }}</span>
                         </template>
+                        <template v-if="column.key == 'actions'">
+                            <router-link :to="{name:'adminUsersEdit', params: {id: record.id} }">
+                                <a-button type="primary" class="me-sm-2 mb-2">
+                                    <i class="fa-solid fa-pen-to-square"></i>
+                                </a-button>
+                            </router-link>
+
+                            <a-button type="primary" danger @click="deleteUser(record.id)">
+                                <i class="fa-solid fa-trash"></i>
+                            </a-button>
+
+                            <a-modal v-model:open="open" title="Are You Sure" @ok="handleOk(record.id)"></a-modal>
+                        </template>
                     </template>
                 </a-table>
             </div>
@@ -30,14 +43,17 @@
     import {
         useMenu
     } from "@/stores/menu.js";
+import axios from "axios";
     import {
         ref,
         onMounted
     } from "vue";
+    import { message } from "ant-design-vue";
     export default {
         setup() {
             useMenu().onSelectedKeys(["users"]);
             const users = ref([]);
+            const open = ref(false);
             const columns = [{
                     title: "#",
                     key: "index",
@@ -76,7 +92,6 @@
                 },
                 {
                     title: "Công Cụ",
-                    dataIndex: "",
                     key: "actions",
                     fixed: "right"
                 },
@@ -92,14 +107,30 @@
                         console.log(error)
                     })
             }
-
+            const deleteUser = () => {
+                open.value = true;
+                // alert(id);
+            }
+            const handleOk = (id) => {
+                axios.delete(`http://127.0.0.1:8000/api/users/delete/${id}`)
+                .then((response) => {
+                    if(response.status == 200){
+                        open.value = false;
+                        message.success('Delete Success', 10);
+                        getUsers();
+                    }
+                })
+            }
             onMounted(() => {
                 getUsers(); // Call the function to fetch users
             });
 
             return {
                 users,
-                columns
+                columns,
+                deleteUser,
+                open,
+                handleOk
             };
         },
     };

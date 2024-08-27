@@ -31,3 +31,15 @@ Route::post('users/create',[
     UserController::class,
     'postCreate'
 ]);
+Route::get('users/get-user/{id}',[
+    UserController::class,
+    'getUser'
+]);
+Route::put('users/edit/{id}',[
+    UserController::class,
+    'editUser'
+]);
+Route::delete('users/delete/{id}',[
+    UserController::class,
+    'delete'
+]);

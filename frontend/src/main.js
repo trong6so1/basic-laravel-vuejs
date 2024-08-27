@@ -3,7 +3,7 @@ import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import App from './App.vue'
 import router from './router'
-import { Input, Select, Avatar, Table, Card, Menu, List, Drawer, Button, message } from 'ant-design-vue'
+import { Modal, Checkbox, Input, Select, Avatar, Table, Card, Menu, List, Drawer, Button, message } from 'ant-design-vue'
 import axios from 'axios'
 
 import 'ant-design-vue/dist/reset.css'
@@ -24,5 +24,7 @@ app.use(Avatar)
 app.use(Table)
 app.use(Input)
 app.use(Select)
+app.use(Checkbox)
+app.use(Modal)
 app.mount('#app')
 app.config.globalProperties.$message = message

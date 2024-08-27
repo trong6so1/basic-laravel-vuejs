@@ -14,6 +14,11 @@ export const admin = [
         name: 'adminUsersCreate',
         component: () => import('@/pages/admin/users/create.vue')
       },
+      {
+        path: 'users/edit/:id',
+        name: 'adminUsersEdit',
+        component: () => import('@/pages/admin/users/edit.vue')
+      },
       //roles
       {
         path: 'roles',
