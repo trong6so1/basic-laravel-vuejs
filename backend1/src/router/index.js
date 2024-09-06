@@ -19,14 +19,24 @@ const router = createRouter({
           component: () => import("@/views/MealsByName.vue")
         },
         {
-          path: '/by-ingredients/:ingredients?',
-          name: 'ByIngredients',
+          path: '/ingredients',
+          name: 'Ingredients',
+          component: () => import("@/views/Ingredients.vue")
+        },
+        {
+          path: '/by-ingredient/:ingredient?',
+          name: 'ByIngredient',
           component: () => import("@/views/MealsByIngredients.vue")
         },
         {
           path: '/by-letter/:letter?',
           name: 'ByLetter',
           component: () => import("@/views/MealsByLetter.vue")
+        },
+        {
+          path: '/meal/:id',
+          name: 'MealDetail',
+          component: () => import('@/views/MealDetail.vue')
         }
       ]
     },
